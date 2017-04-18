@@ -1,0 +1,141 @@
+diff --git a/src/TigerIsland/Features/AcceptanceTests.java b/src/TigerIsland/Features/AcceptanceTests.java
+index d37612e..e69de29 100644
+--- a/src/TigerIsland/Features/AcceptanceTests.java
++++ b/src/TigerIsland/Features/AcceptanceTests.java
+@@ -1,6 +0,0 @@
+-import cucumber.api.CucumberOptions;
+-import cucumber.api.junit.Cucumber;
+-import org.junit.runner.RunWith;
+-
+-@RunWith(Cucumber.class)
+-public class AcceptanceTests { }
+\ No newline at end of file
+diff --git a/src/TigerIsland/GameStateBeforeBuildAction.java b/src/TigerIsland/GameStateBeforeBuildAction.java
+index 50002d9..50478b3 100644
+--- a/src/TigerIsland/GameStateBeforeBuildAction.java
++++ b/src/TigerIsland/GameStateBeforeBuildAction.java
+@@ -56,7 +56,7 @@ public class GameStateBeforeBuildAction extends GameState {
+         Queue<ConstructionMoveInternal> result = new LinkedList<>();
+ 
+         if(board.getHexagonAt(coordinate).containsPieces()){
+-           for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK}){
++           for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK, Terrain.PADDY}){
+                result.add(new ExpandSettlementConstructionMove(coordinate, terrain));
+            }
+            return result;
+diff --git a/src/TigerIsland/GenuisAIController.java b/src/TigerIsland/GenuisAIController.java
+index dbaf71c..2bc24c4 100644
+--- a/src/TigerIsland/GenuisAIController.java
++++ b/src/TigerIsland/GenuisAIController.java
+@@ -184,7 +184,7 @@ public class GenuisAIController implements PlayerController {
+                 return result;
+             }
+ 
+-            for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK}){
++            for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK, Terrain.PADDY}){
+                 result.add(new ExpandSettlementConstructionMove(coordinate, terrain));
+                 Settlement settlement = board.getSettlement(coordinate);
+                 Coordinate settlementCoordinates[] = settlement.getSettlementCoordinates();
+diff --git a/src/TigerIsland/PieceStatusHexagon.java b/src/TigerIsland/PieceStatusHexagon.java
+index 7fbdf21..4b63bf4 100644
+--- a/src/TigerIsland/PieceStatusHexagon.java
++++ b/src/TigerIsland/PieceStatusHexagon.java
+@@ -4,5 +4,6 @@ public enum PieceStatusHexagon {
+     EMPTY,
+     MEEPLE,
+     TOTORO,
+-    TIGER
++    TIGER,
++    SHAMAN
+ }
+\ No newline at end of file
+diff --git a/src/TigerIsland/RandomTileBag.java b/src/TigerIsland/RandomTileBag.java
+index 156faa7..a8f4f04 100644
+--- a/src/TigerIsland/RandomTileBag.java
++++ b/src/TigerIsland/RandomTileBag.java
+@@ -2,14 +2,18 @@ package TigerIsland;
+ 
+ import java.util.Collections;
+ import java.util.LinkedList;
++import java.util.Random;
+ 
+ public class RandomTileBag implements TileBag {
+ 
+     private LinkedList<Tile> bag;
+     private int numberOfTilesInBag;
+ 
++    private Random random;
++
+     public RandomTileBag() {
+         bag = new LinkedList<Tile>();
++        random = new Random();
+         permutationForAllTiles();
+     }
+ 
+@@ -28,8 +32,8 @@ public class RandomTileBag implements TileBag {
+     }
+ 
+     private void permutationForAllTiles() {
+-        for(Terrain terrain_1 : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK}){
+-            for(Terrain terrain_2 : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK}){
++        for(Terrain terrain_1 : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK, Terrain.PADDY}){
++            for(Terrain terrain_2 : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK, Terrain.PADDY}){
+                 Tile newTile = new Tile(terrain_1, terrain_2);
+                 this.bag.push(newTile);
+                 this.bag.push(newTile);
+@@ -38,6 +42,11 @@ public class RandomTileBag implements TileBag {
+             }
+         }
+ 
++        while(bag.size() > 48) {
++            int index = random.nextInt(bag.size());
++            this.bag.remove(index);
++        }
++
+         Collections.shuffle(bag);
+ 
+         numberOfTilesInBag = bag.size();
+diff --git a/src/TigerIsland/SmartAIController.java b/src/TigerIsland/SmartAIController.java
+index b7532cd..bcd76a5 100644
+--- a/src/TigerIsland/SmartAIController.java
++++ b/src/TigerIsland/SmartAIController.java
+@@ -190,7 +190,7 @@ public class SmartAIController implements PlayerController {
+         Queue<ConstructionMoveInternal> result = new LinkedList<>();
+ 
+         if(board.getHexagonAt(coordinate).containsPieces()){
+-            for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK}){
++            for(Terrain terrain : new Terrain[]{Terrain.GRASS, Terrain.JUNGLE, Terrain.LAKE, Terrain.ROCK, Terrain.PADDY}){
+                 result.add(new ExpandSettlementConstructionMove(coordinate, terrain));
+             }
+             return result;
+diff --git a/src/TigerIsland/Terrain.java b/src/TigerIsland/Terrain.java
+index eb08b22..849a80d 100644
+--- a/src/TigerIsland/Terrain.java
++++ b/src/TigerIsland/Terrain.java
+@@ -7,5 +7,6 @@ public enum Terrain {
+     JUNGLE,
+     LAKE,
+     GRASS,
++    PADDY,
+     UNKNOWN // used in AI and nowhere else
+ }
+\ No newline at end of file
+diff --git a/src/TigerIsland/UnitTests/TerrainTest.java b/src/TigerIsland/UnitTests/TerrainTest.java
+index 0ff87e5..9b857cb 100644
+--- a/src/TigerIsland/UnitTests/TerrainTest.java
++++ b/src/TigerIsland/UnitTests/TerrainTest.java
+@@ -5,13 +5,12 @@ package TigerIsland.UnitTests;
+  */
+ 
+ import TigerIsland.Terrain;
+-import TigerIsland.Tile;
+ import org.junit.Test;
+ 
+ import static junit.framework.TestCase.assertEquals;
+ 
+ 
+-public class TerainTest {
++public class TerrainTest {
+ 
+     @Test
+     public void testThereExistsEightTerrainValues() {
