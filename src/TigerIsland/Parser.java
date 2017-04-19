@@ -16,6 +16,13 @@ public class Parser {
         return new ServerRequestAskingUsToMove(gid,time,moveNumber,tile);
     }
 
+    public static ServerRequestAskingUsToSendScore commandToSendScoreObject(String command) {
+        String[] commandArray = command.split("\\s+");
+        final int gidIndex = 1;
+        String gid = commandArray[gidIndex];
+        return new ServerRequestAskingUsToSendScore(gid);
+    }
+
     // The Server lets us know what our opponent did.
     //reads type 2 messages (GAME X MOVE Y PLAYER someID [...effect of whoever])
     public static MoveInGameIncoming opponentMoveStringToGameMove(String opponentMoveString){

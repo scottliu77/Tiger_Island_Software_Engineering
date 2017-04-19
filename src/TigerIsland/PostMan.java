@@ -10,6 +10,7 @@ public class PostMan {
     // Members
     private static PostMan myPostMan;
     private String pid = "-1"; // Our player ID.
+    private String opponentPid;
     private String moveID = "";
 
     // Need to add these here so that we can access these games.
@@ -39,6 +40,10 @@ public class PostMan {
     // Setters
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    public void setOpponentPid(String pid) {
+        this.opponentPid = pid;
     }
 
     // Methods
@@ -174,6 +179,17 @@ public class PostMan {
             match_02.makeMove();
         }
 
+    }
+
+    private void HandleServerRequestAskingUsToSendScoreMessage(String message) {
+        ServerRequestAskingUsToSendScore serverRequestAskingUsToSendScore = Parser.commandToSendScoreObject(message);
+
+        if(match_01.gameID.equals(serverRequestAskingUsToSendScore.getGid())) {
+            String outgoingMessage = match_01.sendScore(pid, opponentPid);
+        }
+        else {
+            String outgoingMessage = match_02.sendScore(pid, opponentPid);
+        }
     }
 
     // The Server lets us know what our opponent did.
