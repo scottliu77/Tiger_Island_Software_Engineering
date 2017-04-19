@@ -2,6 +2,7 @@ package TigerIsland;
 
 public enum BuildOption {
     FOUNDSETTLEMENT,
+    FOUNDSHANGRILA,
     EXPANDSETTLEMENT,
     BUILDTOTORO,
     BUILDTIGER,

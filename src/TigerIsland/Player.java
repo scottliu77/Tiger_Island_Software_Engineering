@@ -4,13 +4,20 @@ public class Player {
     // Members
     private int score;
     private int meepleCount;
+    private int shamanCount;
     private int totoroCount;
     private int tigerCount;
     private Color color;
 
     // Getters
     public int getScore() { return score; }
-    public int getMeeplesCount() { return meepleCount; }
+    public int getRegularVillagersCount() {
+        return meepleCount;
+    }
+    public int getMeeplesCount() { return meepleCount + shamanCount; }
+    public int getShamanCount() {
+        return shamanCount;
+    }
     public int getTotoroCount() { return totoroCount; }
     public int getTigerCount() { return tigerCount; }
     public Color getColor() { return color; }
@@ -25,7 +32,8 @@ public class Player {
     // Constructors
     public Player(Color color) {
         score = 0;
-        meepleCount = 20;
+        meepleCount = 19;
+        shamanCount = 1;
         totoroCount = 3;
         tigerCount = 2;
         this.color = color;
@@ -33,6 +41,7 @@ public class Player {
     private Player(Player player) {
         this.score = player.score;
         this.meepleCount = player.meepleCount;
+        this.shamanCount = player.shamanCount;
         this.totoroCount = player.totoroCount;
         this.tigerCount  = player.tigerCount;
         this.color = player.color;
@@ -53,6 +62,7 @@ public class Player {
     public void subtractMeeples(int num) {
         meepleCount -= num;
     }
+    public void subtractShaman() { shamanCount--; };
 
     public boolean buildTotoroSanctuary(Coordinate coordinate, Board board) {
         TotoroConstructionMove totoroMove = new TotoroConstructionMove(coordinate);
@@ -81,6 +91,16 @@ public class Player {
         }
         return false;
     }
+
+    public boolean foundShangrila(Coordinate coordinate, Board board) {
+        FoundShangrilaConstructionMove foundMove = new FoundShangrilaConstructionMove(coordinate);
+        if(foundMove.canPerformMove(this, board)) {
+            foundMove.makePreverifiedMove(this, board);
+            return true;
+        }
+        return false;
+    }
+
     public boolean expandSettlement(Coordinate coordinate, Board board, Terrain terrain) {
         ExpandSettlementConstructionMove expandMove = new ExpandSettlementConstructionMove(coordinate, terrain);
 
@@ -98,7 +118,7 @@ public class Player {
             piecesDepleted++;
         if(tigerCount == 0)
             piecesDepleted++;
-        if(meepleCount == 0)
+        if(meepleCount == 0 && shamanCount == 0)
             piecesDepleted++;
 
         return piecesDepleted >= 2;

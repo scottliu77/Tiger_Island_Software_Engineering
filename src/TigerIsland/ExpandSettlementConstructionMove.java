@@ -57,7 +57,13 @@ public class ExpandSettlementConstructionMove extends ConstructionMoveJustCoordi
             Coordinate expansionCoordinate = expansion.remove();
             Hexagon hexagon = board.getHexagonAt(expansionCoordinate);
             hexagon.setOccupationStatus(player.getColor(), PieceStatusHexagon.MEEPLE);
-            player.addScore(hexagon.getLevel() * hexagon.getLevel());
+            if(settlement.containsShaman(board)) {
+                player.addScore(2* (hexagon.getLevel() * hexagon.getLevel()));
+
+            }
+            else {
+                player.addScore(hexagon.getLevel() * hexagon.getLevel());
+            }
         }
     }
 }

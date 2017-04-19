@@ -52,6 +52,9 @@ public class NetworkPlayerController implements PlayerController {
             case FOUNDSETTLEMENT:
                 constructionMove = new FoundSettlementConstructionMove(coordinateMove);
                 break;
+            case FOUNDSHANGRILA:
+                constructionMove = new FoundShangrilaConstructionMove(coordinateMove);
+                break;
             case BUILDTOTORO:
                 constructionMove = new TotoroConstructionMove(coordinateMove);
                 break;

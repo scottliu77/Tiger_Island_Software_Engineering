@@ -74,4 +74,14 @@ public class Settlement {
         }
         return expansion;
     }
+
+    public boolean containsShaman(Board board) {
+        for(Coordinate currentLocation : settlement) {
+            Hexagon hexagon = board.getHexagonAt(currentLocation);
+            if(hexagon.getPiecesStatus() == PieceStatusHexagon.SHAMAN){
+                return true;
+            }
+        }
+        return false;
+    }
 }

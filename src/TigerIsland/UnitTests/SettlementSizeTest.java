@@ -49,4 +49,30 @@ public class SettlementSizeTest {
         assertEquals(2, settlementOne.getSettlementSize());
         assertEquals(2, settlementTwo.getSettlementSize());
     }
+
+    @Test
+    public void testCanTellIfSettlementContainsShaman() {
+        Player playerOne = new Player(Color.WHITE);
+        Player playerTwo = new Player(Color.BLACK);
+        Board board = new Board();
+        board.placeStartingTile();
+
+        Coordinate playerOneTargetOne = new Coordinate(99,101);
+        Coordinate playerOneTargetTwo = new Coordinate (100,101);
+
+        Coordinate playerTwoTargetOne = new Coordinate(99,99);
+        Coordinate playerTwoTargetTwo = new Coordinate (100,99);
+
+        playerOne.foundShangrila(playerOneTargetOne, board);
+        playerOne.foundShangrila(playerOneTargetTwo, board);
+
+        playerTwo.foundSettlement(playerTwoTargetOne, board);
+        playerTwo.foundSettlement(playerTwoTargetTwo, board);
+
+        Settlement settlementOne = board.getSettlement(playerOneTargetOne);
+        Settlement settlementTwo = board.getSettlement(playerTwoTargetOne);
+
+        assertEquals(true, settlementOne.containsShaman(board));
+        assertEquals(false, settlementTwo.containsShaman(board));
+    }
 }
